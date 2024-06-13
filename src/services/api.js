@@ -13,6 +13,7 @@ export const token = {
   },
 };
 
+// Auth endpoints
 export const register = async (userData) => {
   const response = await axios.post('/users/signup', userData);
   return response.data;
@@ -33,7 +34,7 @@ export const fetchCurrentUser = async () => {
   return response.data;
 };
 
-
+// Contact endpoints
 export const fetchContacts = async () => {
   const response = await axios.get('/contacts');
   return response.data;
