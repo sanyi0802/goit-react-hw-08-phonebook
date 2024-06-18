@@ -20,7 +20,16 @@ export const register = async (userData) => {
     const response = await axios.post('/users/signup', userData);
     return response.data;
   } catch (error) {
-    console.error('Error registering user:', error.response?.data || error.message);
+    if (error.response) {
+      // El servidor respondió con un estado fuera del rango 2xx
+      console.error('Error response:', error.response.data);
+    } else if (error.request) {
+      // La solicitud fue hecha pero no hubo respuesta
+      console.error('Error request:', error.request);
+    } else {
+      // Algo pasó al configurar la solicitud
+      console.error('Error message:', error.message);
+    }
     throw error;
   }
 };
@@ -30,7 +39,13 @@ export const login = async (userData) => {
     const response = await axios.post('/users/login', userData);
     return response.data;
   } catch (error) {
-    console.error('Error logging in:', error.response?.data || error.message);
+    if (error.response) {
+      console.error('Error response:', error.response.data);
+    } else if (error.request) {
+      console.error('Error request:', error.request);
+    } else {
+      console.error('Error message:', error.message);
+    }
     throw error;
   }
 };
@@ -40,7 +55,13 @@ export const logout = async () => {
     const response = await axios.post('/users/logout');
     return response.data;
   } catch (error) {
-    console.error('Error logging out:', error.response?.data || error.message);
+    if (error.response) {
+      console.error('Error response:', error.response.data);
+    } else if (error.request) {
+      console.error('Error request:', error.request);
+    } else {
+      console.error('Error message:', error.message);
+    }
     throw error;
   }
 };
@@ -50,7 +71,13 @@ export const fetchCurrentUser = async () => {
     const response = await axios.get('/users/current');
     return response.data;
   } catch (error) {
-    console.error('Error fetching current user:', error.response?.data || error.message);
+    if (error.response) {
+      console.error('Error response:', error.response.data);
+    } else if (error.request) {
+      console.error('Error request:', error.request);
+    } else {
+      console.error('Error message:', error.message);
+    }
     throw error;
   }
 };
@@ -61,7 +88,13 @@ export const fetchContacts = async () => {
     const response = await axios.get('/contacts');
     return response.data;
   } catch (error) {
-    console.error('Error fetching contacts:', error.response?.data || error.message);
+    if (error.response) {
+      console.error('Error response:', error.response.data);
+    } else if (error.request) {
+      console.error('Error request:', error.request);
+    } else {
+      console.error('Error message:', error.message);
+    }
     throw error;
   }
 };
@@ -71,7 +104,13 @@ export const addContact = async (contactData) => {
     const response = await axios.post('/contacts', contactData);
     return response.data;
   } catch (error) {
-    console.error('Error adding contact:', error.response?.data || error.message);
+    if (error.response) {
+      console.error('Error response:', error.response.data);
+    } else if (error.request) {
+      console.error('Error request:', error.request);
+    } else {
+      console.error('Error message:', error.message);
+    }
     throw error;
   }
 };
@@ -81,7 +120,13 @@ export const deleteContact = async (contactId) => {
     const response = await axios.delete(`/contacts/${contactId}`);
     return response.data;
   } catch (error) {
-    console.error('Error deleting contact:', error.response?.data || error.message);
+    if (error.response) {
+      console.error('Error response:', error.response.data);
+    } else if (error.request) {
+      console.error('Error request:', error.request);
+    } else {
+      console.error('Error message:', error.message);
+    }
     throw error;
   }
 };
@@ -91,7 +136,13 @@ export const updateContact = async (contactId, updateData) => {
     const response = await axios.patch(`/contacts/${contactId}`, updateData);
     return response.data;
   } catch (error) {
-    console.error('Error updating contact:', error.response?.data || error.message);
+    if (error.response) {
+      console.error('Error response:', error.response.data);
+    } else if (error.request) {
+      console.error('Error request:', error.request);
+    } else {
+      console.error('Error message:', error.message);
+    }
     throw error;
   }
 };
