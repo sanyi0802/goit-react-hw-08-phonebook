@@ -1,3 +1,4 @@
+// redux/slices/contactsSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
@@ -24,6 +25,14 @@ export const deleteContact = createAsyncThunk(
   async (contactId) => {
     await axios.delete(`${API_URL}/${contactId}`);
     return contactId;
+  }
+);
+
+export const updateContact = createAsyncThunk(
+  'contacts/updateContact',
+  async ({ id, updatedContact }) => {
+    const response = await axios.put(`${API_URL}/${id}`, updatedContact);
+    return response.data;
   }
 );
 
@@ -70,6 +79,20 @@ const contactsSlice = createSlice({
         state.items = state.items.filter(item => item.id !== action.payload);
       })
       .addCase(deleteContact.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message;
+      })
+      .addCase(updateContact.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(updateContact.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.items = state.items.map(item =>
+          item.id === action.payload.id ? action.payload : item
+        );
+      })
+      .addCase(updateContact.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.error.message;
       });
