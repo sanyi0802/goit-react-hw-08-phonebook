@@ -1,4 +1,3 @@
-// ContactList.js
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchContacts, deleteContact, updateContact } from '../../redux/slices/contactsSlice';
@@ -11,12 +10,15 @@ const ContactList = () => {
   const isLoading = useSelector((state) => state.contacts.isLoading);
   const error = useSelector((state) => state.contacts.error);
   const filter = useSelector((state) => state.filter);
+  const user = useSelector((state) => state.auth.user);
 
   const [editingContact, setEditingContact] = useState(null);
 
   useEffect(() => {
-    dispatch(fetchContacts());
-  }, [dispatch]);
+    if (user) {
+      dispatch(fetchContacts());
+    }
+  }, [dispatch, user]);
 
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;

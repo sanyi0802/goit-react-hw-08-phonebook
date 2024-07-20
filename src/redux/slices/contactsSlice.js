@@ -1,38 +1,79 @@
-// redux/slices/contactsSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
-
-const API_URL = 'https://66594799de346625136bd038.mockapi.io/contacts/contacts';
+import { fetchContacts as apiFetchContacts, addContact as apiAddContact, deleteContact as apiDeleteContact, updateContact as apiUpdateContact } from '../../services/api';
 
 export const fetchContacts = createAsyncThunk(
   'contacts/fetchContacts',
-  async () => {
-    const response = await axios.get(API_URL);
-    return response.data;
+  async (_, thunkAPI) => {
+    const state = thunkAPI.getState();
+    const token = state.auth.token;
+
+    if (!token) {
+      return thunkAPI.rejectWithValue('No token found');
+    }
+
+    try {
+      const response = await apiFetchContacts();
+      return response;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message);
+    }
   }
 );
 
 export const addContact = createAsyncThunk(
   'contacts/addContact',
-  async (newContact) => {
-    const response = await axios.post(API_URL, newContact);
-    return response.data;
+  async (newContact, thunkAPI) => {
+    const state = thunkAPI.getState();
+    const token = state.auth.token;
+
+    if (!token) {
+      return thunkAPI.rejectWithValue('No token found');
+    }
+
+    try {
+      const response = await apiAddContact(newContact);
+      return response;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message);
+    }
   }
 );
 
 export const deleteContact = createAsyncThunk(
   'contacts/deleteContact',
-  async (contactId) => {
-    await axios.delete(`${API_URL}/${contactId}`);
-    return contactId;
+  async (contactId, thunkAPI) => {
+    const state = thunkAPI.getState();
+    const token = state.auth.token;
+
+    if (!token) {
+      return thunkAPI.rejectWithValue('No token found');
+    }
+
+    try {
+      await apiDeleteContact(contactId);
+      return contactId;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message);
+    }
   }
 );
 
 export const updateContact = createAsyncThunk(
   'contacts/updateContact',
-  async ({ id, updatedContact }) => {
-    const response = await axios.put(`${API_URL}/${id}`, updatedContact);
-    return response.data;
+  async ({ id, updatedContact }, thunkAPI) => {
+    const state = thunkAPI.getState();
+    const token = state.auth.token;
+
+    if (!token) {
+      return thunkAPI.rejectWithValue('No token found');
+    }
+
+    try {
+      const response = await apiUpdateContact(id, updatedContact);
+      return response;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message);
+    }
   }
 );
 
@@ -56,7 +97,7 @@ const contactsSlice = createSlice({
       })
       .addCase(fetchContacts.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.error.message;
+        state.error = action.payload;
       })
       .addCase(addContact.pending, (state) => {
         state.isLoading = true;
@@ -68,7 +109,7 @@ const contactsSlice = createSlice({
       })
       .addCase(addContact.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.error.message;
+        state.error = action.payload;
       })
       .addCase(deleteContact.pending, (state) => {
         state.isLoading = true;
@@ -80,7 +121,7 @@ const contactsSlice = createSlice({
       })
       .addCase(deleteContact.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.error.message;
+        state.error = action.payload;
       })
       .addCase(updateContact.pending, (state) => {
         state.isLoading = true;
@@ -94,7 +135,7 @@ const contactsSlice = createSlice({
       })
       .addCase(updateContact.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.error.message;
+        state.error = action.payload;
       });
   },
 });

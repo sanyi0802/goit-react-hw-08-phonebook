@@ -20,17 +20,7 @@ export const register = async (userData) => {
     const response = await axios.post('/users/signup', userData);
     return response.data;
   } catch (error) {
-    if (error.response) {
-      // El servidor respondió con un estado fuera del rango 2xx
-      console.error('Error response:', error.response.data);
-    } else if (error.request) {
-      // La solicitud fue hecha pero no hubo respuesta
-      console.error('Error request:', error.request);
-    } else {
-      // Algo pasó al configurar la solicitud
-      console.error('Error message:', error.message);
-    }
-    throw error;
+    handleError(error);
   }
 };
 
@@ -39,14 +29,7 @@ export const login = async (userData) => {
     const response = await axios.post('/users/login', userData);
     return response.data;
   } catch (error) {
-    if (error.response) {
-      console.error('Error response:', error.response.data);
-    } else if (error.request) {
-      console.error('Error request:', error.request);
-    } else {
-      console.error('Error message:', error.message);
-    }
-    throw error;
+    handleError(error);
   }
 };
 
@@ -55,14 +38,7 @@ export const logout = async () => {
     const response = await axios.post('/users/logout');
     return response.data;
   } catch (error) {
-    if (error.response) {
-      console.error('Error response:', error.response.data);
-    } else if (error.request) {
-      console.error('Error request:', error.request);
-    } else {
-      console.error('Error message:', error.message);
-    }
-    throw error;
+    handleError(error);
   }
 };
 
@@ -71,14 +47,7 @@ export const fetchCurrentUser = async () => {
     const response = await axios.get('/users/current');
     return response.data;
   } catch (error) {
-    if (error.response) {
-      console.error('Error response:', error.response.data);
-    } else if (error.request) {
-      console.error('Error request:', error.request);
-    } else {
-      console.error('Error message:', error.message);
-    }
-    throw error;
+    handleError(error);
   }
 };
 
@@ -88,14 +57,7 @@ export const fetchContacts = async () => {
     const response = await axios.get('/contacts');
     return response.data;
   } catch (error) {
-    if (error.response) {
-      console.error('Error response:', error.response.data);
-    } else if (error.request) {
-      console.error('Error request:', error.request);
-    } else {
-      console.error('Error message:', error.message);
-    }
-    throw error;
+    handleError(error);
   }
 };
 
@@ -104,14 +66,7 @@ export const addContact = async (contactData) => {
     const response = await axios.post('/contacts', contactData);
     return response.data;
   } catch (error) {
-    if (error.response) {
-      console.error('Error response:', error.response.data);
-    } else if (error.request) {
-      console.error('Error request:', error.request);
-    } else {
-      console.error('Error message:', error.message);
-    }
-    throw error;
+    handleError(error);
   }
 };
 
@@ -120,14 +75,7 @@ export const deleteContact = async (contactId) => {
     const response = await axios.delete(`/contacts/${contactId}`);
     return response.data;
   } catch (error) {
-    if (error.response) {
-      console.error('Error response:', error.response.data);
-    } else if (error.request) {
-      console.error('Error request:', error.request);
-    } else {
-      console.error('Error message:', error.message);
-    }
-    throw error;
+    handleError(error);
   }
 };
 
@@ -136,13 +84,20 @@ export const updateContact = async (contactId, updateData) => {
     const response = await axios.patch(`/contacts/${contactId}`, updateData);
     return response.data;
   } catch (error) {
-    if (error.response) {
-      console.error('Error response:', error.response.data);
-    } else if (error.request) {
-      console.error('Error request:', error.request);
-    } else {
-      console.error('Error message:', error.message);
-    }
-    throw error;
+    handleError(error);
   }
 };
+
+// Manejo de errores
+function handleError(error) {
+  if (error.response) {
+    console.error('Error response:', error.response.data);
+    throw new Error(error.response.data.message || 'An error occurred');
+  } else if (error.request) {
+    console.error('Error request:', error.request);
+    throw new Error('No response received from the server');
+  } else {
+    console.error('Error message:', error.message);
+    throw new Error(error.message);
+  }
+}
